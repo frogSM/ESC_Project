@@ -27,6 +27,7 @@ import com.esc_project.productManager.ProductManager;
 
 public class TestActivity extends StartActivity {
 
+	// Git Hub TEST!!
 	TestListAdapter mTestListAdapter;
 	
 	SocketHelper mSocketHelper;
