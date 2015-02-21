@@ -9,6 +9,9 @@ import android.os.Bundle;
 
 public class ProductManagerActivity extends StartActivity {
 	
+	ProductManager productManager;
+	
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
