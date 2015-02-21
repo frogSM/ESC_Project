@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/AbsoluteLayout1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/maptest" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/mapmarker" />
+
+    <TextView
+        android:id="@+id/testTxt"
+        android:layout_width="516dp"
+        android:layout_height="100dp"
+        android:layout_x="10dp"
+        android:layout_y="95dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/txtViewX"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_x="0dp"
+        android:layout_y="128dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="TextView"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/txtViewY"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_x="0dp"
+        android:layout_y="183dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="TextView"
+        android:textColor="#000000" />
+
+</AbsoluteLayout>
