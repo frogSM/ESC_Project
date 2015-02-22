@@ -46,8 +46,6 @@ public class ProductManagerActivity extends StartActivity {
 	    productManager.OpenSerialPort();
 	   
 	    ArrayList<String> test = new ArrayList ( ); 
-	    test = productManager.GetTaggedUIDs();
-	   
 //	    ListView listview = new ListView(this);
 //	    mTestListAdapter = new TestListAdapter(this);
 //	    listview.setAdapter(mTestListAdapter);
