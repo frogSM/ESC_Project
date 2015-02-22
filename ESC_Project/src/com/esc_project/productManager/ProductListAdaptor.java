@@ -1,4 +1,4 @@
-package com.esc_project.test;
+package com.esc_project.productManager;
 
 import com.esc_project.R;
 
@@ -10,14 +10,14 @@ import android.webkit.WebView.FindListener;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class TestListAdapter extends BaseAdapter {
+public class ProductListAdaptor extends BaseAdapter {
 
 	private Context mContext;
 	private LayoutInflater mLayoutInflater;
 	
 	private ViewHolder viewHolder;
 	
-	public TestListAdapter(Context context) {
+	public ProductListAdaptor(Context context) {
 		// TODO Auto-generated constructor stub
 		mContext = context;
 		mLayoutInflater = LayoutInflater.from(context);

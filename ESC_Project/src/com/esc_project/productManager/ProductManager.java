@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.HexDump;
 import android.content.Context;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
@@ -17,13 +18,10 @@ public class ProductManager {
     private UsbSerialPort port;
     UsbDeviceConnection connection;
     UsbSerialDriver driver;
-    
-	byte rxBuffer [ ] = new byte [64];
-	byte txBuffer [ ] = new byte [64];
 	
 	Context context;
 	
-	ArrayList<Product> products;
+	ArrayList<String> taggedUIDs;
 	
 	
 	//Constructor
@@ -32,7 +30,7 @@ public class ProductManager {
 	}
 	
 	//SericalCommunication
-	public boolean SerialCommunication ( )  {
+	public boolean OpenSerialPort ( )  {
 		
 		boolean ret = false;
 
@@ -77,30 +75,64 @@ public class ProductManager {
 		return ret;
 	}
 	
+	public boolean CloseSerialPort( ) {
+		boolean ret = false;
+		if( this.port != null ) {
+			try {
+				port.close();
+				ret = true;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				ret = false;
+			}
+		}
+		
+		return ret;
+	}
+	
 	//카트에 있는 상품들 저장.
-	public int storeCartProducts( ) {
+	public ArrayList<String> storeCartProducts( ) {
 	
 		//태그 전 ArrayList초기화
-		this.products.clear();
+		this.taggedUIDs.clear();
 		
 
-
-		//Anticollision
+		byte txBuffer [ ] = new byte [4];
+		byte rxBuffer [ ] = new byte [128];
+		
 		txBuffer[0] = 0x04;
 		txBuffer[1] = 0x00;
 		txBuffer[2] = 0x40;
 		txBuffer[3] = (byte)0xff;
 		
-		//명령 요청.
-		try {
-			port.write(txBuffer, 1000);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		int numBytesRead = 0;
+		
+		try { 
+			port.write( txBuffer, 1000 );
+			numBytesRead = port.read(rxBuffer, 1000) ;
+		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
 		
+		byte[ ] [ ] dividedByteBuffer = new byte [20][12];
 		
-		return 0;
-	
+		int tagCount = 0;
+		int k = 0;
+		
+		for( int i = 0 ; i < numBytesRead ; i++ ) {
+			dividedByteBuffer[ tagCount ][ k ] = rxBuffer [ i ];
+			k++;
+			if ( rxBuffer [ i ] == (byte) 0xff ) { 
+				tagCount++;
+				k = 0;
+			}
+		}
+		
+		for ( int i = 0 ; i < tagCount ; i ++ ) { 
+			this.taggedUIDs.add( HexDump.toHexString( dividedByteBuffer[ i ] ) ) ;
+		}
+		
+		return this.taggedUIDs;
 	}
 }

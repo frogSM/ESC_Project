@@ -68,7 +68,7 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity 
-            android:name="com.esc_project.test.TestActivity"
+            android:name="com.esc_project.productManager.ProductManagerActivity"
             android:screenOrientation="landscape">
         </activity>
         

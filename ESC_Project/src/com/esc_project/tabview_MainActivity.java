@@ -3,7 +3,6 @@ package com.esc_project;
 import com.esc_project.R;
 import com.esc_project.printLocation.NavigationActivity;
 import com.esc_project.productManager.*;
-import com.esc_project.test.TestActivity;
 
 import android.app.TabActivity;
 import android.content.Intent;
@@ -37,21 +36,17 @@ public class tabview_MainActivity extends TabActivity {
 		navi_TabSpec.setIndicator("네비게이션");
 		navi_TabSpec.setContent(new Intent(this, NavigationActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		m_tabHost.addTab(navi_TabSpec);
-		
-		TabSpec cal_TabSpec = m_tabHost.newTabSpec("cal");
-		cal_TabSpec.setIndicator("계산");
-		cal_TabSpec.setContent(new Intent(this, ProductManagerActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-		m_tabHost.addTab(cal_TabSpec);
+
+		TabSpec test_TabSpec = m_tabHost.newTabSpec("product");
+		test_TabSpec.setIndicator("상품관리");
+		test_TabSpec.setContent(new Intent(this, ProductManagerActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+		m_tabHost.addTab(test_TabSpec);
 		
 		TabSpec exit_TabSpec = m_tabHost.newTabSpec("exit");
 		exit_TabSpec.setIndicator("쇼핑종료");
 		exit_TabSpec.setContent(new Intent(this, ExitActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		m_tabHost.addTab(exit_TabSpec);
 		
-		TabSpec test_TabSpec = m_tabHost.newTabSpec("test");
-		test_TabSpec.setIndicator("TEST");
-		test_TabSpec.setContent(new Intent(this, TestActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-		m_tabHost.addTab(test_TabSpec);
 
 	}
 
