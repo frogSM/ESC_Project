@@ -47,9 +47,10 @@ public class ProductManager {
 		
 		connection = usbManager.openDevice(driver.getDevice());
 		if (connection == null) {
-			
 			ret = false;
-			
+		}
+		else{
+			ret = true;
 		}
 		// Read some data! Most have just one port (port 0).
 
@@ -91,8 +92,8 @@ public class ProductManager {
 		return ret;
 	}
 	
-	//카트에 있는 상품들 저장.
-	public ArrayList<String> storeCartProducts( ) {
+	//카트에 있는 상품들 초기
+	public ArrayList<String> GetTaggedUIDs( ) {
 	
 		//태그 전 ArrayList초기화
 		this.taggedUIDs.clear();

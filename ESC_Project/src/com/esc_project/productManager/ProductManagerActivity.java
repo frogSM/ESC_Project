@@ -31,7 +31,7 @@ public class ProductManagerActivity extends StartActivity {
 	SocketHelper mSocketHelper;
 	subAsyncTask mSubAsyncTask;
 	
-	private List<String> mScanUid;
+	
 	
 	ProductManager productManager;
 	
@@ -42,6 +42,8 @@ public class ProductManagerActivity extends StartActivity {
 	    setContentView(R.layout.activity_test);
 	    
 	    productManager = new ProductManager( this );
+	    
+	    productManager.OpenSerialPort();
 	   
 	 
 	    
@@ -53,7 +55,6 @@ public class ProductManagerActivity extends StartActivity {
 //	    mTestListAdapter = new TestListAdapter(this);
 //	    listview.setAdapter(mTestListAdapter);
 	    
-	   mScanUid = new ArrayList<String>();
 	   mSocketHelper = mSocketHelper.getInstance(getApplicationContext());
 	   
 	   mSubAsyncTask = new subAsyncTask();
@@ -72,14 +73,12 @@ public class ProductManagerActivity extends StartActivity {
 //			TEST_Method();
 
 			// String屈 List = RFID UID
-			ArrayList<String> sendData = new ArrayList<String>();
-			for (int i = 0; i < mScanUid.size(); i++) {
-				sendData.add(mScanUid.get(i));
-			}
+			ArrayList<String> taggedUIDs = new ArrayList<String>();
+			taggedUIDs = productManager.GetTaggedUIDs();
 
 			/** 贸府何盒 **/
 			JsonHelper jsonhelper = JsonHelper.getInstance(getApplicationContext());
-			String str_json = jsonhelper.makeJsonMessage(Constants.Uid_Info, sendData);
+			String str_json = jsonhelper.makeJsonMessage(Constants.Uid_Info, taggedUIDs);
 			mSocketHelper.sendMessage(mHandler, str_json);
 			/**贸府何盒 **/
 
