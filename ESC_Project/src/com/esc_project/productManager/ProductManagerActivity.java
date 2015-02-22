@@ -45,12 +45,9 @@ public class ProductManagerActivity extends StartActivity {
 	    
 	    productManager.OpenSerialPort();
 	   
-	 
-	    
-//	    mRfidController = new RfidController(getApplicationContext());
-	    
-	    //Log.e("TestActivity", "onCreate success!");
-	    
+	    ArrayList<String> test = new ArrayList ( ); 
+	    test = productManager.GetTaggedUIDs();
+	   
 //	    ListView listview = new ListView(this);
 //	    mTestListAdapter = new TestListAdapter(this);
 //	    listview.setAdapter(mTestListAdapter);

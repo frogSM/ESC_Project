@@ -95,10 +95,6 @@ public class ProductManager {
 	//카트에 있는 상품들 초기
 	public ArrayList<String> GetTaggedUIDs( ) {
 	
-		//태그 전 ArrayList초기화
-		this.taggedUIDs.clear();
-		
-
 		byte txBuffer [ ] = new byte [4];
 		byte rxBuffer [ ] = new byte [128];
 		
