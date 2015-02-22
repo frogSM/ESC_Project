@@ -9,7 +9,9 @@ import android.content.Context;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.widget.Toast;
-import driver.*;
+import driver.UsbSerialDriver;
+import driver.UsbSerialPort;
+import driver.UsbSerialProber;
 
 public class ProductManager {
 	
@@ -107,8 +109,9 @@ public class ProductManager {
 		
 		try { 
 			port.write( txBuffer, 1000 );
+			Thread.sleep(3000);
 			numBytesRead = port.read(rxBuffer, 1000) ;
-		} catch ( IOException e ) {
+		} catch ( IOException | InterruptedException e ) {
 			e.printStackTrace();
 		}
 		
@@ -126,7 +129,7 @@ public class ProductManager {
 			}
 		}
 		
-		for ( int i = 0 ; i < tagCount ; i ++ ) { 
+		for ( int i = 0 ; i < tagCount -1 ; i ++ ) { 
 			this.taggedUIDs.add( HexDump.toHexString( dividedByteBuffer[ i ] ) ) ;
 		}
 		
