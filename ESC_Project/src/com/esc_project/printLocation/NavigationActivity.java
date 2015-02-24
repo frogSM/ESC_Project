@@ -1,40 +1,30 @@
 package com.esc_project.printLocation;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import com.esc_project.R;
 import com.esc_project.StartActivity;
-import com.esc_project.R.id;
-import com.esc_project.R.layout;
 import com.perples.recosdk.RECOBeacon;
 import com.perples.recosdk.RECOBeaconManager;
 import com.perples.recosdk.RECOBeaconRegion;
 import com.perples.recosdk.RECORangingListener;
-import com.perples.recosdk.RECOServiceConnectListener;
 
-import android.R.anim;
-import android.content.res.Resources.Theme;
-import android.graphics.Movie;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View.MeasureSpec;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class NavigationActivity extends StartActivity implements RECORangingListener, RECOServiceConnectListener {
+public class NavigationActivity extends StartActivity implements RECORangingListener {
 
 	protected RECOBeaconManager mBeaconManager;
-	protected ArrayList<RECOBeaconRegion> mRegions;
+	private BeaconHelper mBeaconHelper;
 
 	private BeaconInfo mBeaconInfo;
 	private androidToBeacon mAndroidToBeacon;
@@ -62,10 +52,8 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 		mBeaconManager = RECOBeaconManager.getInstance(getApplicationContext());
 		mBeaconManager.setDiscontinuousScan(true); // 태블릿 버그 수정
 		
-		mRegions = this.generateBeaconRegion();
-		
 		mBeaconManager.setRangingListener(this);
-		mBeaconManager.bind(this);
+		mBeaconHelper = new BeaconHelper(getApplicationContext());
 		
 		BeaconDistanceArr = new float[3];
 		mAndroidToBeacon = new androidToBeacon();
@@ -76,7 +64,6 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 		drawMaker();
 		
 	}
-	
 
 	@Override
 	protected void onResume() {
@@ -92,21 +79,6 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 		super.onDestroy();
 	}
 
-	public void stopAndUnbind() {
-		this.stop(mRegions);
-		this.unbind();
-	}
-
-	private ArrayList<RECOBeaconRegion> generateBeaconRegion() {
-		ArrayList<RECOBeaconRegion> regions = new ArrayList<RECOBeaconRegion>();
-
-		RECOBeaconRegion recoRegion;
-		recoRegion = new RECOBeaconRegion("24DDF4118CF1440C87CDE368DAF9C93E",
-				"RECO Sample Region");
-		regions.add(recoRegion);
-
-		return regions;
-	}
 
 	@Override
 	public void didRangeBeaconsInRegion(Collection<RECOBeacon> beacons,
@@ -150,52 +122,6 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 				&& (androidY > 0 && androidY <= maxHeight)) {
 			moveImage((float)(screenWidth / maxWidth * curPositionX), (float)(screenWidth / maxWidth * androidX),
 					(float)(screenHeight / maxHeight * curPositionY), (float)(screenHeight / maxHeight * androidY));
-		}
-	}
-
-	public void onServiceConnect() {
-		// TODO Auto-generated method stub
-		Log.i("NavigationActivity", "onServiceConnect()");
-		this.start(mRegions);
-	}
-
-	private void unbind() {
-		// TODO Auto-generated method stub
-		try {
-			mBeaconManager.unbind();
-		} catch (RemoteException e) {
-			Log.i("NavigationActivity", "Remote Exception");
-			e.printStackTrace();
-		}
-	}
-
-	private void start(ArrayList<RECOBeaconRegion> regions) {
-		// TODO Auto-generated method stub
-		for (RECOBeaconRegion region : regions) {
-			try {
-				mBeaconManager.startRangingBeaconsInRegion(region);
-			} catch (RemoteException e) {
-				Log.i("NavigationActivity", "Remote Exception");
-				e.printStackTrace();
-			} catch (NullPointerException e) {
-				Log.i("NavigationActivity", "Null Pointer Exception");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void stop(ArrayList<RECOBeaconRegion> regions) {
-		// TODO Auto-generated method stub
-		for (RECOBeaconRegion region : regions) {
-			try {
-				mBeaconManager.stopRangingBeaconsInRegion(region);
-			} catch (RemoteException e) {
-				Log.i("NavigationActivity", "Remote Exception");
-				e.printStackTrace();
-			} catch (NullPointerException e) {
-				Log.i("NavigationActivity", "Null Pointer Exception");
-				e.printStackTrace();
-			}
 		}
 	}
 	
