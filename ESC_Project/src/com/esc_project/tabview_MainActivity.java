@@ -37,16 +37,15 @@ public class tabview_MainActivity extends TabActivity {
 		navi_TabSpec.setContent(new Intent(this, NavigationActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		m_tabHost.addTab(navi_TabSpec);
 
-		TabSpec test_TabSpec = m_tabHost.newTabSpec("product");
-		test_TabSpec.setIndicator("惑前包府");
-		test_TabSpec.setContent(new Intent(this, ProductManagerActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-		m_tabHost.addTab(test_TabSpec);
+		TabSpec product_TabSpec = m_tabHost.newTabSpec("product");
+		product_TabSpec.setIndicator("惑前包府");
+		product_TabSpec.setContent(new Intent(this, ProductManagerActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+		m_tabHost.addTab(product_TabSpec);
 		
 		TabSpec exit_TabSpec = m_tabHost.newTabSpec("exit");
 		exit_TabSpec.setIndicator("碱俏辆丰");
 		exit_TabSpec.setContent(new Intent(this, ExitActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		m_tabHost.addTab(exit_TabSpec);
-		
 
 	}
 

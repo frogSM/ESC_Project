@@ -23,22 +23,21 @@ import android.widget.TextView;
 
 public class NavigationActivity extends StartActivity implements RECORangingListener {
 
-	protected RECOBeaconManager mBeaconManager;
+	private RECOBeaconManager mBeaconManager;
 	private BeaconHelper mBeaconHelper;
 
-	private BeaconInfo mBeaconInfo;
+	private TempBeaconInfo mBeaconInfo;
 	private androidToBeacon mAndroidToBeacon;
 
 	// 비콘 각 거리 배열 정보 [BeaconInfo.java]
 	private float BeaconDistanceArr[];
 	
-	private AbsoluteLayout mapLayout;						//지도 레이아웃
-	private ImageView mMarker;								//마커 그림
+	private AbsoluteLayout mapLayout;		//지도 레이아웃
+	private ImageView mMarker;				//마커 그림
+	private float screenWidth = 0;			// mImage 뷰 가로 길이
+	private float screenHeight = 0;			// mImage 뷰 세로 길이
 	
-	private float screenWidth = 0, screenHeight = 0;	//mImage 뷰 가로, 세로 길이
-	
-	int cnt=0;
-	TranslateAnimation animation;
+	private TranslateAnimation animation;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -69,17 +68,24 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-
-		mBeaconInfo = new BeaconInfo(this);
+		mBeaconHelper = new BeaconHelper(getApplicationContext());
+		mBeaconInfo = new TempBeaconInfo(this);
 	}
-
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		mBeaconHelper.stopAndUnbind();
+	}
+	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		mBeaconHelper.stopAndUnbind();
 	}
-
-
+	
 	@Override
 	public void didRangeBeaconsInRegion(Collection<RECOBeacon> beacons,
 			RECOBeaconRegion regions) {

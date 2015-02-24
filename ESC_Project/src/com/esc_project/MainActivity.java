@@ -1,26 +1,25 @@
 package com.esc_project;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import com.esc_project.R;
-import com.esc_project.printLocation.BeaconInfo;
+import com.esc_project.printLocation.BeaconHelper;
+import com.esc_project.printLocation.TempBeaconInfo;
 import com.esc_project.printLocation.androidToBeacon;
 import com.perples.recosdk.*;
 
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.util.Log;
 import android.widget.ListView;
 
-public class MainActivity extends StartActivity implements RECORangingListener, RECOServiceConnectListener{
+public class MainActivity extends StartActivity implements RECORangingListener {
 	
 	public static MainActivity mContext;
 	
-	protected ArrayList<RECOBeaconRegion> mRegions;
-	protected RECOBeaconManager mBeaconManager;
+	private RECOBeaconManager mBeaconManager;
+	private BeaconHelper mBeaconHelper2;
 	
-	private BeaconInfo mBeaconInfo;
+	private TempBeaconInfo mBeaconInfo;
 	private androidToBeacon mAndroidToBeacon;
 	
 	private ListView mRegionListView;
@@ -38,13 +37,9 @@ public class MainActivity extends StartActivity implements RECORangingListener, 
 		
 		mContext = this;
 		
-		mBeaconManager = RECOBeaconManager.getInstance(getApplicationContext());
-		mBeaconManager.setDiscontinuousScan(true); // 태블릿 버그 수정
-		
-		mRegions = this.generateBeaconRegion();
-		
-		mBeaconManager.setRangingListener(this);
-		mBeaconManager.bind(this);
+		mBeaconHelper2 = new BeaconHelper(getApplicationContext());
+		mBeaconManager = mBeaconHelper2.getBeaconManager();
+	    mBeaconManager.setRangingListener(this);
 		
 		BeaconDistanceArr = new float[3];
 		mAndroidToBeacon = new androidToBeacon();
@@ -59,30 +54,25 @@ public class MainActivity extends StartActivity implements RECORangingListener, 
 		// TODO Auto-generated method stub
 		super.onResume();
 		
-		mBeaconInfo = new BeaconInfo(this);
+		mBeaconHelper2 = new BeaconHelper(getApplicationContext());
+		mBeaconInfo = new TempBeaconInfo(this);
 		mRegionListView.setAdapter(mBeaconInfo);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		mBeaconHelper2.stopAndUnbind();
 	}
 	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		mBeaconHelper2.stopAndUnbind();
 	}
 	
-	public void stopAndUnbind() {
-		this.stop(mRegions);
-		this.unbind();
-	}
-
-	private ArrayList<RECOBeaconRegion> generateBeaconRegion() {
-		ArrayList<RECOBeaconRegion> regions = new ArrayList<RECOBeaconRegion>();
-		
-		RECOBeaconRegion recoRegion;
-		recoRegion = new RECOBeaconRegion("24DDF4118CF1440C87CDE368DAF9C93E", "RECO Sample Region");
-		regions.add(recoRegion);
-
-		return regions;
-	}
 
 	@Override
 	public void didRangeBeaconsInRegion(Collection<RECOBeacon> beacons,
@@ -97,52 +87,6 @@ public class MainActivity extends StartActivity implements RECORangingListener, 
 
 		mBeaconInfo.notifyDataSetChanged();
 		
-	}
-
-	public void onServiceConnect() {
-		// TODO Auto-generated method stub
-		Log.i("MainActivity", "onServiceConnect()");
-		this.start(mRegions);
-	}
-
-	private void unbind() {
-		// TODO Auto-generated method stub
-		try {
-		mBeaconManager.unbind();
-		} catch(RemoteException e) {
-			Log.i("MainActivity", "Remote Exception");
-			e.printStackTrace();
-		}
-	}
-	
-	private void start(ArrayList<RECOBeaconRegion> regions) {
-		// TODO Auto-generated method stub
-		for(RECOBeaconRegion region : regions) {
-			try {
-				mBeaconManager.startRangingBeaconsInRegion(region);
-			} catch (RemoteException e) {
-				Log.i("MainActivity", "Remote Exception");
-				e.printStackTrace();
-			} catch (NullPointerException e) {
-				Log.i("MainActivity", "Null Pointer Exception");
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	private void stop(ArrayList<RECOBeaconRegion> regions) {
-		// TODO Auto-generated method stub
-		for(RECOBeaconRegion region : regions) {
-			try {
-				mBeaconManager.stopRangingBeaconsInRegion(region);
-			} catch (RemoteException e) {
-				Log.i("MainActivity", "Remote Exception");
-				e.printStackTrace();
-			} catch (NullPointerException e) {
-				Log.i("MainActivity", "Null Pointer Exception");
-				e.printStackTrace();
-			}
-		}
 	}
 
 }

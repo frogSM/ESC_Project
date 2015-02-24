@@ -63,8 +63,6 @@ public class StartActivity extends Activity {
 		Intent test = new Intent(this, BeaconMonitoringService.class);
 		stopService(test);
 		
-		// Ranging Á¾·á.
-		((MainActivity)MainActivity.mContext).stopAndUnbind();
 	};
 
 	public void onButtonClicked(View v) {

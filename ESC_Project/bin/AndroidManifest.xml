@@ -71,10 +71,10 @@
             android:name="com.esc_project.productManager.ProductManagerActivity"
             android:screenOrientation="landscape">
         </activity>
-        
         <service android:name="com.perples.recosdk.RECOBeaconService" />
         <service android:name="com.esc_project.getDiscountInfo.BeaconMonitoringService" >
         </service>
+        
         
     </application>
 
