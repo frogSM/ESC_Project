@@ -5,9 +5,9 @@ public class BeaconInfo {
 	private int major;
 	private int minor;
 	private int rssi;
-	private double accuracy;
+	private float accuracy;
 	
-	public BeaconInfo(int major, int minor, int rssi, int accuracy) {
+	public BeaconInfo(int major, int minor, int rssi, float accuracy) {
 		// TODO Auto-generated constructor stub
 		this.major = major;
 		this.minor = minor;
@@ -24,7 +24,7 @@ public class BeaconInfo {
 	public int getRssi() {
 		return rssi;
 	}
-	public double getAccuracy() {
+	public float getAccuracy() {
 		return accuracy;
 	}
 }

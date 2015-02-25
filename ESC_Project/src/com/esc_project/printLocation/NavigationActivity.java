@@ -1,5 +1,6 @@
 package com.esc_project.printLocation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.esc_project.R;
@@ -25,12 +26,13 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 
 	private RECOBeaconManager mBeaconManager;
 	private BeaconHelper mBeaconHelper;
+	private PositionCalculation mPositionCalculation;
 
-	private TempBeaconInfo mBeaconInfo;
-	private androidToBeacon mAndroidToBeacon;
+//	private TempBeaconInfo mBeaconInfo;
+//	private androidToBeacon mAndroidToBeacon;
 
 	// 비콘 각 거리 배열 정보 [BeaconInfo.java]
-	private float BeaconDistanceArr[];
+//	private float BeaconDistanceArr[];
 	
 	private AbsoluteLayout mapLayout;		//지도 레이아웃
 	private ImageView mMarker;				//마커 그림
@@ -48,14 +50,14 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 		
 		actList.add(this);
 		
-		mBeaconManager = RECOBeaconManager.getInstance(getApplicationContext());
-		mBeaconManager.setDiscontinuousScan(true); // 태블릿 버그 수정
-		
-		mBeaconManager.setRangingListener(this);
 		mBeaconHelper = new BeaconHelper(getApplicationContext());
+		mBeaconManager = mBeaconHelper.getBeaconManager();
+		mBeaconManager.setRangingListener(this);
 		
-		BeaconDistanceArr = new float[3];
-		mAndroidToBeacon = new androidToBeacon();
+		mPositionCalculation = new PositionCalculation();
+		
+//		BeaconDistanceArr = new float[3];
+//		mAndroidToBeacon = new androidToBeacon();
 		
 		mapLayout = (AbsoluteLayout)findViewById(R.id.AbsoluteLayout1);
 		mMarker = (ImageView)findViewById(R.id.imageView1);
@@ -69,7 +71,7 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 		// TODO Auto-generated method stub
 		super.onResume();
 		mBeaconHelper = new BeaconHelper(getApplicationContext());
-		mBeaconInfo = new TempBeaconInfo(this);
+//		mBeaconInfo = new TempBeaconInfo(this);
 	}
 	
 	@Override
@@ -89,8 +91,8 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 	@Override
 	public void didRangeBeaconsInRegion(Collection<RECOBeacon> beacons,
 			RECOBeaconRegion regions) {
-		double curPositionX = mAndroidToBeacon.getAndroidX();
-		double curPositionY = mAndroidToBeacon.getAndroidY();
+//		double curPositionX = mAndroidToBeacon.getAndroidX();
+//		double curPositionY = mAndroidToBeacon.getAndroidY();
 		
 		// TODO Auto-generated method stub
 		Log.i("NavigationActivity",
@@ -98,36 +100,53 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 						+ regions.getUniqueIdentifier()
 						+ ", number of beacons ranged: " + beacons.size());
 		
-		/** 칼만 필터를 위한 For문 **/
-		for (int revisionCnt = 0; revisionCnt < 5 ; revisionCnt++) {
-			mBeaconInfo.updateAllBeacons(beacons);
-			mBeaconInfo.selectBeacons(); // 모든 비콘 탐색
-			BeaconDistanceArr = mBeaconInfo.getBeaconDistanceArr();
-			mAndroidToBeacon.setAndroidPosition(BeaconDistanceArr);
-			mAndroidToBeacon.setCalmanRevision(revisionCnt);
-		}
+//		/** 칼만 필터를 위한 For문 **/
+//		for (int revisionCnt = 0; revisionCnt < 5 ; revisionCnt++) {
+//			mBeaconInfo.updateAllBeacons(beacons);
+//			mBeaconInfo.selectBeacons(); // 모든 비콘 탐색
+//			BeaconDistanceArr = mBeaconInfo.getBeaconDistanceArr();
+//			mAndroidToBeacon.setAndroidPosition(BeaconDistanceArr);
+//			mAndroidToBeacon.setCalmanRevision(revisionCnt);
+//		}
 
-		//mBeaconInfo.notifyDataSetChanged(); // baseAdapter 사용할때, 뷰 업데이트시 사용하는 메소드
+//		Log.i("NavigationActivity", "Accuracy[0] : " + BeaconDistanceArr[0]);
+//		Log.i("NavigationActivity", "Accuracy[1] : " + BeaconDistanceArr[1]);
+//		Log.i("NavigationActivity", "Accuracy[2] : " + BeaconDistanceArr[2]);
+//		
+//		double androidX = mAndroidToBeacon.getAndroidX();
+//		double androidY = mAndroidToBeacon.getAndroidY();
+//		double maxWidth = mAndroidToBeacon.getDistanceAB();
+//		double maxHeight = mAndroidToBeacon.getDistanceAC();
 		
-		Log.i("NavigationActivity", "Accuracy[0] : " + BeaconDistanceArr[0]);
-		Log.i("NavigationActivity", "Accuracy[1] : " + BeaconDistanceArr[1]);
-		Log.i("NavigationActivity", "Accuracy[2] : " + BeaconDistanceArr[2]);
+//		TextView txtX = (TextView)findViewById(R.id.txtViewX);
+//		txtX.setText("[X] : " +androidX);
+//		TextView txtY = (TextView)findViewById(R.id.txtViewY);
+//		txtY.setText("[Y] : " + androidY);
+//		
+//		
+//		if ((androidX > 0 && androidX <= maxWidth)
+//				&& (androidY > 0 && androidY <= maxHeight)) {
+//			moveImage((float)(screenWidth / maxWidth * curPositionX), (float)(screenWidth / maxWidth * androidX),
+//					(float)(screenHeight / maxHeight * curPositionY), (float)(screenHeight / maxHeight * androidY));
+//		}
 		
-		double androidX = mAndroidToBeacon.getAndroidX();
-		double androidY = mAndroidToBeacon.getAndroidY();
-		double maxWidth = mAndroidToBeacon.getDistanceAB();
-		double maxHeight = mAndroidToBeacon.getDistanceAC();
+		double NowPosition_X = mPositionCalculation.getAndroidPosition_X();
+		double NowPosition_Y = mPositionCalculation.getAndroidPosition_Y();
 		
-		TextView txtX = (TextView)findViewById(R.id.txtViewX);
-		txtX.setText("[X] : " +androidX);
-		TextView txtY = (TextView)findViewById(R.id.txtViewY);
-		txtY.setText("[Y] : " + androidY);
+		for(int revisionCnt=0 ; revisionCnt<5 ; revisionCnt++) {
+			mPositionCalculation.setAndroidPosition(mBeaconHelper.getBeaconInfo(beacons));
+			mPositionCalculation.setCalmanRevision(revisionCnt);
+		}
 		
+		double RevisionPosition_X = mPositionCalculation.getAndroidPosition_X();
+		double RevisionPosition_Y = mPositionCalculation.getAndroidPosition_Y();
+		double maxWidth = mPositionCalculation.getDistanceGY();
+		double maxHeight = mPositionCalculation.getDistanceGR();
 		
-		if ((androidX > 0 && androidX <= maxWidth)
-				&& (androidY > 0 && androidY <= maxHeight)) {
-			moveImage((float)(screenWidth / maxWidth * curPositionX), (float)(screenWidth / maxWidth * androidX),
-					(float)(screenHeight / maxHeight * curPositionY), (float)(screenHeight / maxHeight * androidY));
+		if ((RevisionPosition_X > 0 && RevisionPosition_X <= maxWidth)
+				&& (RevisionPosition_Y > 0 && RevisionPosition_Y <= maxHeight)) {
+			moveImage((float)(screenWidth / maxWidth * NowPosition_X), (float)(screenWidth / maxWidth * RevisionPosition_X),
+					(float)(screenHeight / maxHeight * NowPosition_Y), (float)(screenHeight / maxHeight * RevisionPosition_Y));
 		}
 	}
 	
@@ -167,7 +186,7 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 			}
 		});
 		
-		Log.e("NavigationActivity", "[Device]  X: " +mAndroidToBeacon.getAndroidX() + ", Y: " + mAndroidToBeacon.getAndroidY());
+//		Log.e("NavigationActivity", "[Device]  X: " +mAndroidToBeacon.getAndroidX() + ", Y: " + mAndroidToBeacon.getAndroidY());
 		animation.setFillEnabled(true);
 		animation.setFillAfter(true);
 		mMarker.startAnimation(animation);
