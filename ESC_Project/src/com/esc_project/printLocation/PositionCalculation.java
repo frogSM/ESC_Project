@@ -14,8 +14,8 @@ public class PositionCalculation {
 	// 보정 전 안드로이드 좌표
 	private Position revisionBeforeAndroid[];
 	
-	private double distance_GY = 2.40;
-	private double distance_GR = 1.20;
+	private double distance_GY = 1.2;
+	private double distance_GR = 0.6;
 	private double distance_YR;
 	
 	private class Position {
@@ -35,7 +35,7 @@ public class PositionCalculation {
 		for(int i=0 ; i<5 ; i++) {
 			revisionBeforeAndroid[i] = new Position();
 		}
-		
+		Log.i("PositionCalculation", "PositionCalculation()");
 		settingBeaconPosition();
 	}
 	
@@ -81,8 +81,6 @@ public class PositionCalculation {
 				Android_GreenBeacon, 2)
 				- Math.pow(AndroidDevice.X, 2)
 				- Math.pow(AndroidDevice.Y, 2))));
-		
-	Log.i("PositionCalculation", "[AndroidDevice] x="+ AndroidDevice.X+" y="+AndroidDevice.Y+" z="+AndroidDevice.Z);
 	}
 	
 	public void setCalmanRevision(int index) {
@@ -131,6 +129,7 @@ public class PositionCalculation {
 			AndroidDevice.Y = temp.Y;
 			AndroidDevice.Z = temp.Z;
 		}
+		
 
 	}
 	
@@ -140,6 +139,10 @@ public class PositionCalculation {
 	
 	public double getAndroidPosition_Y() {
 		return AndroidDevice.Y;
+	}
+	
+	public double getAndroidPosition_Z() {
+		return AndroidDevice.Z;
 	}
 	
 	public double getDistanceGY() {

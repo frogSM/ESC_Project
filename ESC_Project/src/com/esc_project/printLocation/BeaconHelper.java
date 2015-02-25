@@ -42,6 +42,8 @@ public class BeaconHelper implements RECOServiceConnectListener {
 
 		mRegions = generateBeaconRegion();
 		mBeaconManager.bind(this);
+		
+		Log.i("BeaconHelper", "settingBeacon");
 	}
 	
 	public ArrayList<BeaconInfo> getBeaconInfo(Collection<RECOBeacon> beacons) {
@@ -66,6 +68,8 @@ public class BeaconHelper implements RECOServiceConnectListener {
 		classifiedBeacons.add(0, GreenBeacon);
 		classifiedBeacons.add(1, YellowBeacon);
 		classifiedBeacons.add(2, RedBeacon);
+
+		Log.i("BeaconHelper", "getBeaconInfo");
 		
 		return classifiedBeacons;
 	}
@@ -96,10 +100,10 @@ public class BeaconHelper implements RECOServiceConnectListener {
 			try {
 				mBeaconManager.startRangingBeaconsInRegion(region);
 			} catch (RemoteException e) {
-				Log.i("NavigationActivity", "Remote Exception");
+				Log.i("BeaconHelper", "Remote Exception");
 				e.printStackTrace();
 			} catch (NullPointerException e) {
-				Log.i("NavigationActivity", "Null Pointer Exception");
+				Log.i("BeaconHelper", "Null Pointer Exception");
 				e.printStackTrace();
 			}
 		}
@@ -111,10 +115,10 @@ public class BeaconHelper implements RECOServiceConnectListener {
 			try {
 				mBeaconManager.stopRangingBeaconsInRegion(region);
 			} catch (RemoteException e) {
-				Log.i("NavigationActivity", "Remote Exception");
+				Log.i("BeaconHelper", "Remote Exception");
 				e.printStackTrace();
 			} catch (NullPointerException e) {
-				Log.i("NavigationActivity", "Null Pointer Exception");
+				Log.i("BeaconHelper", "Null Pointer Exception");
 				e.printStackTrace();
 			}
 		}
@@ -123,7 +127,7 @@ public class BeaconHelper implements RECOServiceConnectListener {
 	@Override
 	public void onServiceConnect() {
 		// TODO Auto-generated method stub
-		Log.i("NavigationActivity", "onServiceConnect()");
+		Log.i("BeaconHelper", "onServiceConnect()");
 		mBeaconManager.setDiscontinuousScan(true);
 		this.start(mRegions);
 	}
@@ -132,9 +136,9 @@ public class BeaconHelper implements RECOServiceConnectListener {
 		// TODO Auto-generated method stub
 		try {
 			mBeaconManager.unbind();
-			Log.i("NavigationActivity", "unbind");
+			Log.i("BeaconHelper", "unbind");
 		} catch (RemoteException e) {
-			Log.i("NavigationActivity", "Remote Exception");
+			Log.i("BeaconHelper", "Remote Exception");
 			e.printStackTrace();
 		}
 	}

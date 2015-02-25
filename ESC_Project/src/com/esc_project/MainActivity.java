@@ -17,7 +17,7 @@ public class MainActivity extends StartActivity implements RECORangingListener {
 	public static MainActivity mContext;
 	
 	private RECOBeaconManager mBeaconManager;
-	private BeaconHelper mBeaconHelper2;
+	private BeaconHelper mBeaconHelper;
 	
 	private TempBeaconInfo mBeaconInfo;
 	private androidToBeacon mAndroidToBeacon;
@@ -37,8 +37,8 @@ public class MainActivity extends StartActivity implements RECORangingListener {
 		
 		mContext = this;
 		
-		mBeaconHelper2 = new BeaconHelper(getApplicationContext());
-		mBeaconManager = mBeaconHelper2.getBeaconManager();
+		mBeaconHelper = new BeaconHelper(getApplicationContext());
+		mBeaconManager = mBeaconHelper.getBeaconManager();
 	    mBeaconManager.setRangingListener(this);
 		
 		BeaconDistanceArr = new float[3];
@@ -54,7 +54,7 @@ public class MainActivity extends StartActivity implements RECORangingListener {
 		// TODO Auto-generated method stub
 		super.onResume();
 		
-		mBeaconHelper2 = new BeaconHelper(getApplicationContext());
+		mBeaconHelper = new BeaconHelper(getApplicationContext());
 		mBeaconInfo = new TempBeaconInfo(this);
 		mRegionListView.setAdapter(mBeaconInfo);
 	}
@@ -63,14 +63,14 @@ public class MainActivity extends StartActivity implements RECORangingListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		mBeaconHelper2.stopAndUnbind();
+		mBeaconHelper.stopAndUnbind();
 	}
 	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		mBeaconHelper2.stopAndUnbind();
+		mBeaconHelper.stopAndUnbind();
 	}
 	
 

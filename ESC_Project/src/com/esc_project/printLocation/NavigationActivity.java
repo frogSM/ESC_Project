@@ -27,18 +27,27 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 	private RECOBeaconManager mBeaconManager;
 	private BeaconHelper mBeaconHelper;
 	private PositionCalculation mPositionCalculation;
-
-//	private TempBeaconInfo mBeaconInfo;
-//	private androidToBeacon mAndroidToBeacon;
-
-	// 비콘 각 거리 배열 정보 [BeaconInfo.java]
-//	private float BeaconDistanceArr[];
 	
+	/** 이전 안드로이드 X, Y 값 **/
+	private double NowPosition_X;
+	private double NowPosition_Y;
+	
+	/** 갱신 후 보정된 안드로이드 X, Y 값 **/
+	private double RevisionPosition_X;
+	private double RevisionPosition_Y;
+	private double RevisionPosition_Z;
+	
+	/** 최대 넓이와 높이 제한 **/
+	private double maxWidth;
+	private double maxHeight;
+
+	/** 맵 관련 전역변수 **/
 	private AbsoluteLayout mapLayout;		//지도 레이아웃
 	private ImageView mMarker;				//마커 그림
 	private float screenWidth = 0;			// mImage 뷰 가로 길이
 	private float screenHeight = 0;			// mImage 뷰 세로 길이
 	
+	/** 애니메이션 전역변수 **/
 	private TranslateAnimation animation;
 
 	/** Called when the activity is first created. */
@@ -56,9 +65,6 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 		
 		mPositionCalculation = new PositionCalculation();
 		
-//		BeaconDistanceArr = new float[3];
-//		mAndroidToBeacon = new androidToBeacon();
-		
 		mapLayout = (AbsoluteLayout)findViewById(R.id.AbsoluteLayout1);
 		mMarker = (ImageView)findViewById(R.id.imageView1);
 		
@@ -71,7 +77,6 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 		// TODO Auto-generated method stub
 		super.onResume();
 		mBeaconHelper = new BeaconHelper(getApplicationContext());
-//		mBeaconInfo = new TempBeaconInfo(this);
 	}
 	
 	@Override
@@ -91,67 +96,42 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 	@Override
 	public void didRangeBeaconsInRegion(Collection<RECOBeacon> beacons,
 			RECOBeaconRegion regions) {
-//		double curPositionX = mAndroidToBeacon.getAndroidX();
-//		double curPositionY = mAndroidToBeacon.getAndroidY();
-		
 		// TODO Auto-generated method stub
 		Log.i("NavigationActivity",
 				"didRangeBeaconsInRegion() region: "
 						+ regions.getUniqueIdentifier()
 						+ ", number of beacons ranged: " + beacons.size());
 		
-//		/** 칼만 필터를 위한 For문 **/
-//		for (int revisionCnt = 0; revisionCnt < 5 ; revisionCnt++) {
-//			mBeaconInfo.updateAllBeacons(beacons);
-//			mBeaconInfo.selectBeacons(); // 모든 비콘 탐색
-//			BeaconDistanceArr = mBeaconInfo.getBeaconDistanceArr();
-//			mAndroidToBeacon.setAndroidPosition(BeaconDistanceArr);
-//			mAndroidToBeacon.setCalmanRevision(revisionCnt);
-//		}
-
-//		Log.i("NavigationActivity", "Accuracy[0] : " + BeaconDistanceArr[0]);
-//		Log.i("NavigationActivity", "Accuracy[1] : " + BeaconDistanceArr[1]);
-//		Log.i("NavigationActivity", "Accuracy[2] : " + BeaconDistanceArr[2]);
-//		
-//		double androidX = mAndroidToBeacon.getAndroidX();
-//		double androidY = mAndroidToBeacon.getAndroidY();
-//		double maxWidth = mAndroidToBeacon.getDistanceAB();
-//		double maxHeight = mAndroidToBeacon.getDistanceAC();
+		NowPosition_X = mPositionCalculation.getAndroidPosition_X();
+		NowPosition_Y = mPositionCalculation.getAndroidPosition_Y();
 		
-//		TextView txtX = (TextView)findViewById(R.id.txtViewX);
-//		txtX.setText("[X] : " +androidX);
-//		TextView txtY = (TextView)findViewById(R.id.txtViewY);
-//		txtY.setText("[Y] : " + androidY);
-//		
-//		
-//		if ((androidX > 0 && androidX <= maxWidth)
-//				&& (androidY > 0 && androidY <= maxHeight)) {
-//			moveImage((float)(screenWidth / maxWidth * curPositionX), (float)(screenWidth / maxWidth * androidX),
-//					(float)(screenHeight / maxHeight * curPositionY), (float)(screenHeight / maxHeight * androidY));
-//		}
-		
-		double NowPosition_X = mPositionCalculation.getAndroidPosition_X();
-		double NowPosition_Y = mPositionCalculation.getAndroidPosition_Y();
-		
+		/** 칼만 보정 값 **/
 		for(int revisionCnt=0 ; revisionCnt<5 ; revisionCnt++) {
 			mPositionCalculation.setAndroidPosition(mBeaconHelper.getBeaconInfo(beacons));
 			mPositionCalculation.setCalmanRevision(revisionCnt);
 		}
 		
-		double RevisionPosition_X = mPositionCalculation.getAndroidPosition_X();
-		double RevisionPosition_Y = mPositionCalculation.getAndroidPosition_Y();
-		double maxWidth = mPositionCalculation.getDistanceGY();
-		double maxHeight = mPositionCalculation.getDistanceGR();
+		RevisionPosition_X = mPositionCalculation.getAndroidPosition_X();
+		RevisionPosition_Y = mPositionCalculation.getAndroidPosition_Y();
+		RevisionPosition_Z = mPositionCalculation.getAndroidPosition_Z();
+		maxWidth = mPositionCalculation.getDistanceGY();
+		maxHeight = mPositionCalculation.getDistanceGR();
 		
 		if ((RevisionPosition_X > 0 && RevisionPosition_X <= maxWidth)
 				&& (RevisionPosition_Y > 0 && RevisionPosition_Y <= maxHeight)) {
 			moveImage((float)(screenWidth / maxWidth * NowPosition_X), (float)(screenWidth / maxWidth * RevisionPosition_X),
 					(float)(screenHeight / maxHeight * NowPosition_Y), (float)(screenHeight / maxHeight * RevisionPosition_Y));
 		}
+		
+		Log.i("PositionCalculation", "[RevisionAfter] X="+ RevisionPosition_X+" Y="+RevisionPosition_Y +" Z="+ RevisionPosition_Z);
+		TextView txtX = (TextView)findViewById(R.id.txtViewX);
+		txtX.setText("[X] : " +RevisionPosition_X);
+		TextView txtY = (TextView)findViewById(R.id.txtViewY);
+		txtY.setText("[Y] : " + RevisionPosition_Y);
 	}
-	
+
+	/** 현재 Map을 그린 레이아웃 정보 받기 **/
 	public void drawMaker() {
-		// 스크린 사이즈 구하기
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		
@@ -159,12 +139,12 @@ public class NavigationActivity extends StartActivity implements RECORangingList
 		this.screenWidth = mapLayout.getMeasuredWidth() / dm.density;
 		this.screenHeight = mapLayout.getMeasuredHeight() / dm.density;
 		
-		Log.e("NavigationActivity", "Width = " + screenWidth + ", Height = " + screenHeight);
-		Log.e("NavigationActivity", "ScreenWidth = " + dm.widthPixels + ", ScreenHeight = " + dm.heightPixels);
+		Log.i("NavigationActivity", "Width = " + screenWidth + ", Height = " + screenHeight);
+		Log.i("NavigationActivity", "ScreenWidth = " + dm.widthPixels + ", ScreenHeight = " + dm.heightPixels);
 	}
 	
+	/** Map Marker 이동 함수 **/
 	public void moveImage(float fromX, final float toX, float fromY, final float toY) {
-		// 지도 마커 이동.
 		animation = new TranslateAnimation(fromX, toX, fromY, toY);
 		animation.setDuration(500);
 		animation.setAnimationListener(new AnimationListener() {

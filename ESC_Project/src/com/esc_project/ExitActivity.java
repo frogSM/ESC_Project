@@ -81,8 +81,8 @@ public class ExitActivity extends StartActivity implements OnClickListener {
 		
 		@Override
 		public void handleMessage(android.os.Message msg) {
-			if(msg.what == 0) {
-				List<Product> product = (List<Product>) msg.obj;
+			if(msg.what == Constants.THREAD_MESSAGE) {
+				List<Product> product = (List<Product>)mJsonHelper.parserJsonMessage(msg.obj.toString());
 				
 //				Log.e("ExitActivity", "uid : " + product.get(0).getUid() + "\n name : " + product.get(0).getName() + "\n price : " + product.get(0).getPrice());
 				mTextViewTEST.setText("uid : " + product.get(1).getUid() + "\n name : " + product.get(1).getName() + "\n price : " + product.get(1).getPrice());
